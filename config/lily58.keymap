@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2020 The ZMK Contributors
  *
@@ -9,37 +10,78 @@
 #include <dt-bindings/zmk/keys.h>
 
 / {
-    out: combos {
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOMEROW_MODS";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            flavor = "tap-preferred";
+            require-prior-idle-ms = <125>;
+            quick-tap-ms = <200>;
+        };
+
+        shifthr: shifthr {
+            compatible = "zmk,behavior-hold-tap";
+            label = "SHIFTHR";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <185>;
+            flavor = "tap-preferred";
+            quick-tap-ms = <185>;
+        };
+
+        weak: weak {
+            compatible = "zmk,behavior-hold-tap";
+            label = "WEAK";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <230>;
+            flavor = "tap-preferred";
+            require-prior-idle-ms = <125>;
+            quick-tap-ms = <230>;
+        };
+
+        backspace: backspace {
+            compatible = "zmk,behavior-tap-dance";
+            label = "BACKSPACE";
+            #binding-cells = <0>;
+            bindings = <&kp BACKSPACE>, <&kp LC(BACKSPACE)>;
+        };
+    };
+
+    combos {
         compatible = "zmk,combos";
 
-        return_right {
-            bindings = <&kp RETURN>;
-            key-positions = <31 32>;
+        caps {
+            bindings = <&kp CAPS>;
+            key-positions = <16 19>;
         };
 
-        escape_left {
+        jk_fix {
             bindings = <&kp ESCAPE>;
-            key-positions = <26 25>;
-        };
-
-        return_left {
-            bindings = <&kp RETURN>;
             key-positions = <28 27>;
         };
+    };
 
-        escape_right {
-            bindings = <&kp ESCAPE>;
-            key-positions = <33 34>;
+    macros {
+        save: save {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap>, <&kp ESCAPE &kp COLON &kp W &kp ENTER>;
+
+            label = "SAVE";
         };
 
-        alt_right {
-            bindings = <&sk RIGHT_ALT>;
-            key-positions = <45 46>;
-        };
-
-        alt_left {
-            bindings = <&sk LEFT_ALT>;
-            key-positions = <39 40>;
+        email: email {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp J &kp O &kp E &kp DOT &kp P &kp R &kp I &kp N &kp G &kp L &kp E &kp AT &kp P &kp R &kp O &kp T &kp O &kp N &kp DOT &kp M &kp E>;
+            label = "EMAIL";
         };
     };
 
@@ -56,14 +98,12 @@
 
             display-name = "Base";
             bindings = <
-&none      &kp N1  &kp N2  &kp N3  &kp N4  &kp N5                                        &kp N6         &kp N7  &kp N8     &kp N9   &kp N0    &kp GRAVE
-&kp TAB    &kp Q   &kp W   &kp E   &kp R   &kp T                                         &kp Y          &kp U   &kp I      &kp O    &kp P     &kp MINUS
-&kp LCTRL  &kp A   &kp S   &kp D   &kp F   &kp G                                         &kp H          &kp J   &kp K      &kp L    &kp SEMI  &kp SQT
-&none      &kp Z   &kp X   &kp C   &kp V   &kp B   &kp LBKT              &kp RBKT        &kp N          &kp M   &kp COMMA  &kp DOT  &kp FSLH  &none
-                           &none   &mo 1   &none   &mt LEFT_GUI SPACE    &sk LEFT_SHIFT  &kp BACKSPACE  &mo 2   &none
+&none  &none              &none             &none                    &none                  &none                                      &none        &none             &none             &none              &none             &none
+&none  &kp Q              &kp W             &kp E                    &kp R                  &kp T                                      &kp Y        &kp U             &kp I             &kp O              &kp P             &none
+&none  &weak LEFT_META A  &weak LEFT_ALT S  &shifthr LEFT_CONTROL D  &shifthr LEFT_SHIFT F  &kp G                                      &kp H        &shifthr RSHFT J  &shifthr RCTRL K  &weak RIGHT_ALT L  &weak RMETA SEMI  &none
+&none  &kp Z              &kp X             &kp C                    &kp V                  &kp B            &to 3          &none      &kp N        &kp M             &kp COMMA         &kp DOT            &kp FSLH          &none
+                                            &none                    &none                  &lt 1 BACKSPACE  &lt 2 SPACE    &lt 2 RET  &lt 1 SPACE  &none             &none
             >;
-
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
         };
 
         lower_layer {
@@ -76,11 +116,11 @@
 
             display-name = "Lower";
             bindings = <
-&bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4                    &trans     &trans     &trans           &trans    &trans    &trans
-&kp F1      &kp F2        &kp F3        &kp F4        &kp F5        &kp F6                          &kp F7     &kp F8     &kp F9           &kp F10   &kp F11   &kp F12
-&kp GRAVE   &kp EXCL      &kp AT        &kp HASH      &kp DOLLAR    &kp PRCNT                       &kp CARET  &kp AMPS   &kp KP_MULTIPLY  &kp LPAR  &kp RPAR  &kp TILDE
-&trans      &trans        &trans        &trans        &trans        &trans        &trans    &trans  &trans     &kp MINUS  &kp KP_PLUS      &kp LBRC  &kp RBRC  &kp PIPE
-                                        &trans        &trans        &trans        &trans    &trans  &trans     &trans     &trans
+&none   &none     &none   &none     &none       &none                        &trans     &trans     &trans           &trans            &trans             &trans
+&none   &kp F2    &kp F3  &kp F4    &kp F5      &kp F6                       &kp F7     &kp F8     &kp F9           &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &none
+&none   &kp EXCL  &kp AT  &kp HASH  &kp DOLLAR  &kp PRCNT                    &kp CARET  &kp AMPS   &kp KP_MULTIPLY  &kp LPAR          &kp RPAR           &none
+&trans  &trans    &trans  &trans    &trans      &trans     &trans    &trans  &kp EQUAL  &kp MINUS  &kp KP_PLUS      &kp LBRC          &kp RIGHT_BRACE    &none
+                          &none     &trans      &trans     &trans    &trans  &trans     &trans     &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -96,14 +136,25 @@
 
             display-name = "Raise";
             bindings = <
-&trans     &trans  &trans  &trans   &trans   &trans                     &trans       &trans     &trans     &trans    &trans     &trans
-&kp GRAVE  &kp N1  &kp N2  &kp N3   &kp N4   &kp N5                     &kp N6       &kp N7     &kp N8     &kp N9    &kp N0     &trans
-&kp F1     &kp F2  &kp F3  &kp F4   &kp F5   &kp F6                     &trans       &kp LEFT   &kp DOWN   &kp UP    &kp RIGHT  &trans
-&kp F7     &kp F8  &kp F9  &kp F10  &kp F11  &kp F12  &trans    &trans  &kp KP_PLUS  &kp MINUS  &kp EQUAL  &kp LBKT  &kp RBKT   &kp BSLH
-                           &trans   &trans   &trans   &trans    &trans  &trans       &trans     &trans
+&trans  &trans  &trans  &trans  &trans      &trans                        &trans  &trans    &trans    &trans  &trans     &trans
+&none   &kp N1  &kp N2  &kp N3  &kp N4      &kp N5                        &kp N6  &kp N7    &kp N8    &kp N9  &kp N0     &trans
+&none   &none   &none   &none   &none       &none                         &trans  &kp LEFT  &kp DOWN  &kp UP  &kp RIGHT  &trans
+&none   &none   &none   &none   &none       &none       &trans    &trans  &none   &none     &none     &none   &none      &none
+                        &trans  &bt BT_CLR  &bt BT_NXT  &trans    &trans  &trans  &trans    &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        gaming {
+            display-name = "gaming";
+            bindings = <
+&none  &none  &none  &none  &none  &none                                      &none        &none             &none             &none              &none             &none
+&none  &kp Q  &kp W  &kp E  &kp R  &kp T                                      &kp Y        &kp U             &kp I             &kp O              &kp P             &none
+&none  &kp A  &kp S  &kp D  &kp F  &kp G                                      &kp H        &shifthr RSHFT J  &shifthr RCTRL K  &weak RIGHT_ALT L  &weak RMETA SEMI  &none
+&none  &kp Z  &kp X  &kp C  &kp V  &kp B            &to 0          &none      &kp N        &kp M             &kp COMMA         &kp DOT            &kp FSLH          &none
+                     &none  &none  &lt 1 BACKSPACE  &lt 2 SPACE    &lt 2 RET  &lt 1 SPACE  &none             &none
+            >;
         };
     };
 };
